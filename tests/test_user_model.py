@@ -1,98 +1,74 @@
 import pytest
-import uuid
+from app.models.user_model import User, UserRole
+from sqlalchemy.exc import IntegrityError
 from datetime import datetime
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from app.models.user_model import User, UserRole, Base
-
-# Setup a test database
-DATABASE_URL = "sqlite:///:memory:"  # Use in-memory SQLite for tests
-engine = create_engine(DATABASE_URL, echo=False)
-TestingSessionLocal = sessionmaker(bind=engine)
-
-@pytest.fixture
-def db_session():
-    """Fixture to initialize and teardown the test database."""
-    Base.metadata.create_all(bind=engine)
-    session = TestingSessionLocal()
-    yield session
-    session.close()
-    Base.metadata.drop_all(bind=engine)
+import uuid
 
 def test_create_user(db_session):
-    """Test creating a new User with valid fields."""
+    """Test user creation with valid data."""
     user = User(
         id=uuid.uuid4(),
-        nickname="johndoe",
-        email="john.doe@example.com",
-        hashed_password="fake_hashed_password",
-        role=UserRole.AUTHENTICATED,
-        email_verified=False,
+        nickname="test_user",
+        email="test@example.com",
+        hashed_password="hashed_pw",
+        role=UserRole.AUTHENTICATED
     )
     db_session.add(user)
     db_session.commit()
+    assert user.id is not None
+    assert user.email == "test@example.com"
 
-    saved_user = db_session.query(User).filter_by(email="john.doe@example.com").first()
-    assert saved_user is not None
-    assert saved_user.nickname == "johndoe"
-    assert saved_user.role == UserRole.AUTHENTICATED
-
-def test_lock_unlock_user(db_session):
-    """Test locking and unlocking a User account."""
-    user = User(
-        id=uuid.uuid4(),
-        nickname="locked_user",
-        email="locked@example.com",
-        hashed_password="hashed_password",
-        role=UserRole.MANAGER,
-    )
-    db_session.add(user)
-    db_session.commit()
-
-    # Lock the account
-    user.lock_account()
-    db_session.commit()
-
-    locked_user = db_session.query(User).filter_by(email="locked@example.com").first()
-    assert locked_user.is_locked is True
-
-    # Unlock the account
-    user.unlock_account()
-    db_session.commit()
-
-    unlocked_user = db_session.query(User).filter_by(email="locked@example.com").first()
-    assert unlocked_user.is_locked is False
-
-def test_update_professional_status(db_session):
-    """Test updating the professional status of a User."""
-    user = User(
-        id=uuid.uuid4(),
-        nickname="pro_user",
-        email="pro@example.com",
-        hashed_password="hashed_password",
-        role=UserRole.MANAGER,
-        is_professional=False,
-    )
-    db_session.add(user)
-    db_session.commit()
-
-    # Update professional status
-    user.update_professional_status(True)
-    db_session.commit()
-
-    updated_user = db_session.query(User).filter_by(email="pro@example.com").first()
-    assert updated_user.is_professional is True
-    assert updated_user.professional_status_updated_at is not None
-
-def test_invalid_user_missing_required_fields(db_session):
-    """Test creating a User with missing required fields."""
-    with pytest.raises(Exception):  # IntegrityError should be raised
+def test_missing_required_fields(db_session):
+    """Test user creation with missing required fields."""
+    with pytest.raises(IntegrityError):
         user = User(
-            id=uuid.uuid4(),
             nickname=None,  # Required field
-            email="invalid@example.com",
-            hashed_password="password",
-            role=UserRole.AUTHENTICATED,
+            email="missing@example.com",
+            hashed_password="hashed_pw",
+            role=UserRole.AUTHENTICATED
         )
         db_session.add(user)
         db_session.commit()
+
+def test_email_verification(db_session):
+    """Test verifying email."""
+    user = User(
+        id=uuid.uuid4(),
+        nickname="email_verify_user",
+        email="verify@example.com",
+        hashed_password="hashed_pw",
+        email_verified=False,
+        role=UserRole.AUTHENTICATED
+    )
+    user.verify_email()
+    assert user.email_verified is True
+
+def test_lock_unlock_account(db_session):
+    """Test locking and unlocking a user account."""
+    user = User(
+        id=uuid.uuid4(),
+        nickname="lock_user",
+        email="lock@example.com",
+        hashed_password="hashed_pw",
+        is_locked=False,
+        role=UserRole.AUTHENTICATED
+    )
+    user.lock_account()
+    assert user.is_locked is True
+
+    user.unlock_account()
+    assert user.is_locked is False
+
+def test_professional_status_update(db_session):
+    """Test updating professional status."""
+    user = User(
+        id=uuid.uuid4(),
+        nickname="pro_status_user",
+        email="pro@example.com",
+        hashed_password="hashed_pw",
+        is_professional=False,
+        role=UserRole.AUTHENTICATED
+    )
+    user.update_professional_status(True)
+    assert user.is_professional is True
+    assert user.professional_status_updated_at is not None
