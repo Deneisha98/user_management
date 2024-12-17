@@ -1,6 +1,6 @@
-import pytest
+import pytest # type: ignore
 from app.models.user_model import User, UserRole
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError # type: ignore
 from datetime import datetime
 import uuid
 
