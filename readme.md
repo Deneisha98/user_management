@@ -127,4 +127,4 @@ docker run -p 8000:8000 deneisha98/user_management:latest
 http://localhost:8000/docs
 
 ### Reflection Document
-For an overview of the project, QA issues, and testing strategy, please take a look at the Reflection Document.
+For an overview of the project, QA issues, and testing strategy, please take a look at the Reflection Document. 
