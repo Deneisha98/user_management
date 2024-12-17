@@ -31,6 +31,8 @@ class Settings(BaseSettings):
     postgres_server: str = Field(default='localhost', description="PostgreSQL server address")
     postgres_port: str = Field(default='5432', description="PostgreSQL port")
     postgres_db: str = Field(default='myappdb', description="PostgreSQL database name")
+    
+    debug: bool = Field(default=False, description="Debug mode outputs errors and SQLAlchemy queries")
 
     class Config:
         env_file = ".env"
