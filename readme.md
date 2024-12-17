@@ -1,53 +1,136 @@
+# User Management System
+## Overview
+This project implements a User Management System using FastAPI, SQLAlchemy, and PostgreSQL. It supports user profile management, professional status upgrades, role-based access control, and full API documentation. The system is containerized using Docker and follows a CI/CD pipeline via GitHub Actions.
 
+---
 
-# The User Management System Final Project: Your Epic Coding Adventure Awaits! 🎉✨🔥
+## Features
 
-## Introduction: Buckle Up for the Ride of a Lifetime 🚀🎬
+### User Profile Management
+- Users can update their profile fields: first_name, last_name, bio, location, etc.
+- Managers and Admins can upgrade users to **Professional Status**.
+  
+### Role-Based Access Control
 
-Welcome to the User Management System project - an epic open-source adventure crafted by the legendary Professor Keith Williams for his rockstar students at NJIT! 🏫👨‍🏫⭐ This project is your gateway to coding glory, providing a bulletproof foundation for a user management system that will blow your mind! 🤯 You'll bridge the gap between the realms of seasoned software pros and aspiring student developers like yourselves. 
+- Roles: ANONYMOUS, AUTHENTICATED, MANAGER, and ADMIN.
+  
+### API Documentation
+Integrated Swagger UI for API testing and documentation at:
+- **Swagger UI**: http://localhost:8000/docs
+  
+### Database
+- PostgreSQL with SQLAlchemy ORM.
+- Alembic for database migrations.
+  
+---
+## Setup Instructions
 
-### [Instructor Video - Project Overview and Tips](https://youtu.be/gairLNAp6mA) 🎥
+### Prerequisites  
+- Docker and Docker Compose  
+- Python 3.10+  
+- PostgreSQL  
 
-- [Introduction to the system features and overview of the project - please read](system_documentation.md) 📚
-- [Project Setup Instructions](setup.md) ⚒️
-- [Features to Select From](features.md) 🛠️
-- [About the Project](about.md)🔥🌟
+### Installation  
 
-## Goals and Objectives: Unlock Your Coding Superpowers 🎯🏆🌟
+1.**Clone the repository**  
+   ```bash
+   git clone https://github.com/Deneisha98/user_management.git
+   cd user_management
+2.**Set up environment variables**
+  ```bash
+    cp .env.sample .env
+3.**Start the application**
+  ```bash
+  docker compose up --build
+4.**Access the API**
+  -Swagger UI: http://localhost:8000/docs
+  -PgAdmin: http://localhost:5050
+    -Default credentials: admin@example.com / adminpassword
+### Tests
 
-Get ready to ascend to new heights with this legendary project:
+#### Running Tests
+To execute all tests using **Pytest**, run the following command:
+```bash
+pytest
 
-1. **Practical Experience**: Dive headfirst into a real-world codebase, collaborate with your teammates, and contribute to an open-source project like a seasoned pro! 💻👩‍💻🔥
-2. **Quality Assurance**: Develop ninja-level skills in identifying and resolving bugs, ensuring your code quality and reliability are out of this world. 🐞🔍⚡
-3. **Test Coverage**: Write additional tests to cover edge cases, error scenarios, and important functionalities - leave no stone unturned and no bug left behind! ✅🧪🕵️‍♂️
-4. **Feature Implementation**: Implement a brand new, mind-blowing feature and make your epic mark on the project, following best practices for coding, testing, and documentation like a true artisan. ✨🚀🎆
-5. **Collaboration**: Foster teamwork and collaboration through code reviews, issue tracking, and adhering to contribution guidelines - teamwork makes the dream work, and together you'll conquer worlds! 🤝💪🌍
-6. **Industry Readiness**: Prepare for the software industry by working on a project that simulates real-world development scenarios - level up your skills to super hero status  and become an unstoppable coding force! 🔝🚀🏆⚡
+### List of Tests Added
+- test_lock_unlock_account
+Verifies locking and unlocking a user account.
 
-## Submission and Grading: Your Chance to Shine 📝✏️📈
+- test_professional_status_update
+Tests updating a user's professional status.
 
-1. **Reflection Document**: Submit a 1-2 page Word document reflecting on your learnings throughout the course and your experience working on this epic project. Include links to the closed issues for the **5 QA issues, 10 NEW tests, and 1 Feature** you'll be graded on. Make sure your project successfully deploys to DockerHub and include a link to your Docker repository in the document - let your work speak for itself! 📄🔗💥
+- test_invalid_user_missing_required_fields
+Ensures required fields validation for user creation.
 
-2. **Commit History**: Show off your consistent hard work through your commit history like a true coding warrior. **Projects with less than 10 commits will get an automatic 0 - ouch!** 😬⚠️ A significant part of your project's evaluation will be based on your use of issues, commits, and following a professional development process like a boss - prove your coding prowess! 💻🔄🔥
+- test_email_uniqueness_constraint
+Prevents duplicate email entries in the database.
 
-3. **Deployability**: Broken projects that don't deploy to Dockerhub or pass all the automated tests on GitHub actions will face point deductions - nobody likes a buggy app! 🐞☠️ Show the world your flawless coding skills!
+- test_empty_fields_rejected
+Ensures that empty fields are not accepted during user updates.
 
-## Managing the Project Workload: Stay Focused, Stay Victorious ⏱️🧠⚡
+- test_user_profile_update
+Validates that users can successfully update their profile fields.
 
-This project requires effective time management and a well-planned strategy, but fear not - you've got this! Follow these steps to ensure a successful (and sane!) project outcome:
+- test_invalid_uuid_rejected
+Ensures the API rejects invalid UUID formats for user_id.
 
-1. **Select a Feature**: [Choose a feature](features.md) from the provided list of additional improvements that sparks your interest and aligns with your goals like a laser beam. ✨⭐🎯 This is your chance to shine!
+- test_duplicate_email_rejected
+Verifies that duplicate email addresses are rejected.
 
-2. **Quality Assurance (QA)**: Thoroughly test the system's major functionalities related to your chosen feature and identify at least 5 issues or bugs like a true detective. Create GitHub issues for each identified problem, providing detailed descriptions and steps to reproduce - the more detail, the merrier! 🔍🐞🕵️‍♀️ Leave no stone unturned!
+- test_role_validation
+Ensures only valid roles (ANONYMOUS, AUTHENTICATED, MANAGER, ADMIN) can be assigned.
 
-3. **Test Coverage Improvement**: Review the existing test suite and identify gaps in test coverage like a pro. Create 10 additional tests to cover edge cases, error scenarios, and important functionalities related to your chosen feature. Focus on areas such as user registration, login, authorization, and database interactions. Simulate the setup of the system as the admin user, then creating users, and updating user accounts - leave no stone unturned, no bug left behind! ✅🧪🔍🔬 Become the master of testing!
+- test_professional_status_timestamp
+Tests that the professional status timestamp updates correctly when a user's status is upgraded.
 
-4. **New Feature Implementation**: Implement your chosen feature, following the project's coding practices and architecture like a coding ninja. Write appropriate tests to ensure your new feature is functional and reliable like a rock. Document the new feature, including its usage, configuration, and any necessary migrations - future you will thank you profusely! 🚀✨📝👩‍💻⚡ Make your mark on this project!
+###Known QA Issues
 
-5. **Maintain a Working Main Branch**: Throughout the project, ensure you always have a working main branch deploying to Docker like a well-oiled machine. This will prevent any last-minute headaches and ensure a smooth submission process - no tears allowed, only triumphs! 😊🚢⚓ Stay focused, stay victorious!
+The following QA issues were identified and resolved:
 
-Remember, it's more important to make something work reliably and be reasonably complete than to implement an overly complex feature. Focus on creating a feature that you can build upon or demonstrate in an interview setting - show off your skills like a rockstar! 💪🚀🎓
+1. API does not validate UUID format for user_id
+2. Missing Role Validation
+3. Professional Status Timestamp Missing
+4. Empty Fields Accepted
+5. Duplicate Email Allowed
 
-Don't forget to always have a working main branch deploying to Docker at all times. If you always have a working main branch, you will never be in jeopardy of receiving a very disappointing grade :-). Keep that main branch shining bright!
+###CI/CD Pipeline
 
-Let's embark on this epic coding adventure together and conquer the world of software engineering! You've got this, coding rockstars! 🚀🌟✨
+The project uses GitHub Actions for continuous integration and deployment.
+
+Pipeline Steps:
+1. Testing:
+Runs the Pytest suite to ensure all tests pass.
+
+2. Build and Push Docker Image:
+Builds the Docker image and pushes it to DockerHub.
+
+3. Security Scan:
+Scans the Docker image for vulnerabilities using Trivy.
+
+### Deployment
+The application can be deployed locally or via DockerHub.
+
+#### Run Locally:
+To run the application locally:
+
+```bash
+uvicorn app.main:app --reload
+
+Access the API documentation at:
+http://localhost:8000/docs
+
+#### Docker Deployment:
+Pull the Docker image:
+```bash
+docker pull deneisha98/user_management:latest
+
+Run the Docker container:
+```bash
+docker run -p 8000:8000 deneisha98/user_management:latest
+
+Access the API at:
+http://localhost:8000/docs
+
+Reflection Document
+For an overview of the project, QA issues, and testing strategy, please take a look at the Reflection Document.
