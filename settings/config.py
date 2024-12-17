@@ -1,5 +1,5 @@
-from pydantic import Field, AnyUrl
-from pydantic_settings import BaseSettings
+from pydantic import Field, AnyUrl # type: ignore
+from pydantic_settings import BaseSettings # type: ignore
 
 class Settings(BaseSettings):
     max_login_attempts: int = Field(default=3, description="Background color of QR codes")
