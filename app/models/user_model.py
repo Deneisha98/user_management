@@ -2,11 +2,11 @@ from builtins import bool, int, str
 from datetime import datetime
 from enum import Enum
 import uuid
-from sqlalchemy import (
+from sqlalchemy import ( # type: ignore
     Column, String, Integer, DateTime, Boolean, func, Enum as SQLAlchemyEnum, ForeignKey
 )
-from sqlalchemy.dialects.postgresql import UUID, ENUM
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.dialects.postgresql import UUID, ENUM # type: ignore
+from sqlalchemy.orm import Mapped, mapped_column, relationship # type: ignore
 from app.database import Base
 
 
