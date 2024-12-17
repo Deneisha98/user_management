@@ -33,14 +33,11 @@ Integrated Swagger UI for API testing and documentation at:
 ### Installation  
 
 1.**Clone the repository**  
-   ```bash
    git clone https://github.com/Deneisha98/user_management.git
    cd user_management
 2.**Set up environment variables**
-  ```bash
     cp .env.sample .env
 3.**Start the application**
-  ```bash
   docker compose up --build
 4.**Access the API**
   -Swagger UI: http://localhost:8000/docs
@@ -50,7 +47,6 @@ Integrated Swagger UI for API testing and documentation at:
 
 #### Running Tests
 To execute all tests using **Pytest**, run the following command:
-```bash
 pytest
 
 ### List of Tests Added
@@ -84,7 +80,7 @@ Ensures only valid roles (ANONYMOUS, AUTHENTICATED, MANAGER, ADMIN) can be assig
 - test_professional_status_timestamp
 Tests that the professional status timestamp updates correctly when a user's status is upgraded.
 
-###Known QA Issues
+### Known QA Issues
 
 The following QA issues were identified and resolved:
 
@@ -94,7 +90,7 @@ The following QA issues were identified and resolved:
 4. Empty Fields Accepted
 5. Duplicate Email Allowed
 
-###CI/CD Pipeline
+### CI/CD Pipeline
 
 The project uses GitHub Actions for continuous integration and deployment.
 
@@ -114,7 +110,6 @@ The application can be deployed locally or via DockerHub.
 #### Run Locally:
 To run the application locally:
 
-```bash
 uvicorn app.main:app --reload
 
 Access the API documentation at:
@@ -122,15 +117,14 @@ http://localhost:8000/docs
 
 #### Docker Deployment:
 Pull the Docker image:
-```bash
+
 docker pull deneisha98/user_management:latest
 
 Run the Docker container:
-```bash
 docker run -p 8000:8000 deneisha98/user_management:latest
 
-Access the API at:
+### Access the API at:
 http://localhost:8000/docs
 
-Reflection Document
+### Reflection Document
 For an overview of the project, QA issues, and testing strategy, please take a look at the Reflection Document.
