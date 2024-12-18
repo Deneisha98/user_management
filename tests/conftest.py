@@ -20,12 +20,12 @@ from unittest.mock import AsyncMock, patch
 from uuid import uuid4
 
 # Third-party imports
-import pytest
-from fastapi.testclient import TestClient
-from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker, scoped_session
-from faker import Faker
+import pytest # type: ignore
+from fastapi.testclient import TestClient # type: ignore
+from httpx import AsyncClient # type: ignore
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession # type: ignore
+from sqlalchemy.orm import sessionmaker, scoped_session # type: ignore
+from faker import Faker # type: ignore
 
 # Application-specific imports
 from app.main import app
