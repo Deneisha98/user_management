@@ -109,21 +109,12 @@ async def locked_user(db_session):
     await db_session.commit()
     return user
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 async def user(db_session):
-    user_data = {
-        "nickname": fake.user_name(),
-        "first_name": fake.first_name(),
-        "last_name": fake.last_name(),
-        "email": fake.email(),
-        "hashed_password": hash_password("MySuperPassword$1234"),
-        "role": UserRole.AUTHENTICATED,
-        "email_verified": False,
-        "is_locked": False,
-    }
-    user = User(**user_data)
+    user = User(nickname="test_user", email="test@example.com", hashed_password="hashed_pw")
     db_session.add(user)
     await db_session.commit()
+    await db_session.refresh(user)
     return user
 
 @pytest.fixture(scope="function")
