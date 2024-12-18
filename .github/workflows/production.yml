@@ -13,66 +13,22 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.10.12]
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: myappdb
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Cache Python packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          python-version: 3.10
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt pytest-asyncio alembic
+          pip install -r requirements.txt
 
-      - name: Apply database migrations
-        env:
-          DATABASE_URL: postgresql+asyncpg://user:password@localhost:5432/myappdb
-        run: alembic upgrade head
-
-      - name: Wait for PostgreSQL to be ready
-        run: |
-          for i in {1..10}; do
-            pg_isready -h localhost -p 5432 -U user && echo "PostgreSQL is ready" && exit 0
-            echo "Waiting for PostgreSQL..." && sleep 3
-          done
-          echo "PostgreSQL failed to start" && exit 1
-        env:
-          PGUSER: user
-          PGPASSWORD: password
-
-      - name: Run tests with Pytest
-        env:
-          DATABASE_URL: postgresql+asyncpg://user:password@localhost:5432/myappdb
-        run: pytest --cov=app --disable-warnings
+      - name: Run tests
+        run: pytest
 
   build-and-push-docker:
     needs: test
@@ -96,9 +52,6 @@ jobs:
         with:
           push: true
           tags: deneisha98/user_management:${{ github.sha }}
-          platforms: linux/amd64,linux/arm64
-          cache-from: type=registry,ref=deneisha98/user_management:cache
-          cache-to: type=inline,mode=max
 
       - name: Scan the Docker image
         uses: aquasecurity/trivy-action@master
@@ -108,4 +61,3 @@ jobs:
           exit-code: '1'
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
-
